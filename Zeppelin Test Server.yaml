@@ -3,6 +3,9 @@ success_emoji: <:yes:841798945700184179>
 error_emoji: <:no:841798946144649277>
 
 
+# Version 1.0.0 of this config
+
+
 levels:
 # role id: levels
   "849265532221259776": 100 # Top
@@ -42,8 +45,6 @@ plugins:
 
   "mutes": # --------------------------------------------------------------------------------------------------------------------------
 # start of the mutes plugin
-# v-1.0.1 Cleaned up some messages
-# Merp
     config:
       mute_role: "849271721365340190" # dog shit
       move_to_voice_channel: null
@@ -72,8 +73,6 @@ plugins:
 
   "mod_actions": # --------------------------------------------------------------------------------------------------------------------------
 # start of the mod actions plugin
-# v-1.0.2 Changes warn, kick, ban and softban message
-# Merp
     replaceDefaultOverrides: true
     config:
       dm_on_warn: true
@@ -161,8 +160,6 @@ plugins:
 
   "cases": #-----------------------------------------------------------------------------------------------------------------------------------------------------
 # start of cases 
-# v-1.1.2 Changed colours
-# Merp
     config:
       log_automatic_actions: true
       case_log_channel: "849267527916978196" # case-log
@@ -191,8 +188,6 @@ plugins:
 
   "counters": # --------------------------------------------------------------------------------------------------------------------------
 # start of the counters plugin
-# v-0.0.0 Adding versions to keep track of them (dont remove)
-# Merp
     config:
       counters:
         badword_counter:
@@ -213,9 +208,6 @@ plugins:
 
   "automod": # --------------------------------------------------------------------------------------------------------------------------
 # start of the automod plugin
-# v-0.0.0 # Added a new combination of rules targeting spam in this version
-# Merp
-# Need to re-write
     config:
       rules:
 
@@ -686,8 +678,6 @@ plugins:
   
   "logs": # ----------------------------------------------------------------------------------------------------------------------------------------------------
 # start of logs
-# v-1.0.5 (Changed nickname, username, role add, role remove and role change to text logs)
-# written by Merp
     config:
       channels:
         "849267545239191582": #member-logs
