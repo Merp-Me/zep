@@ -3,6 +3,9 @@ success_emoji: <:yes:841798945700184179>
 error_emoji: <:no:841798946144649277>
 
 
+# Version 1.0.0
+
+
 levels:
 # role id: levels
   "672443935360024607": 100 # Ark
@@ -31,7 +34,6 @@ plugins:
 
 
   "slowmode": # --------------------------------------------------------------------------------------------------------------------------
-# start of the slowmode plugin (I dont believe versions will be necessary)
     config:
       use_native_slowmode: true
       can_manage: false
@@ -43,7 +45,6 @@ plugins:
           is_affected: false
 
   "auto_delete": # --------------------------------------------------------------------------------------------------------------------------
-# start of the autodelete plugin (I dont believe versions will be necessary)
     overrides:
       - channel: "713046258415173713" # Booster Panel
       #- channel: more channels to enable this in
@@ -56,8 +57,6 @@ plugins:
 
   "mutes": # --------------------------------------------------------------------------------------------------------------------------
 # start of the mutes plugin
-# v-1.0.1 Cleaned up some messages
-# Merp
     config:
       mute_role: "677271765038137373" # Muted
       move_to_voice_channel: null
@@ -84,8 +83,6 @@ plugins:
 
   "mod_actions": # --------------------------------------------------------------------------------------------------------------------------
 # start of the mod actions plugin
-# v-1.0.2 Changes warn, kick, ban and softban message
-# Merp
     replaceDefaultOverrides: true
     config:
       dm_on_warn: true
@@ -173,8 +170,6 @@ plugins:
 
   "cases": #-----------------------------------------------------------------------------------------------------------------------------------------------------
 # start of cases 
-# v-1.1.2 Changed colours
-# Merp
     config:
       log_automatic_actions: true
       case_log_channel: "817684727888085002" # case-log
@@ -203,8 +198,6 @@ plugins:
 
   "counters": # --------------------------------------------------------------------------------------------------------------------------
 # start of the counters plugin
-# v-0.0.0 Adding versions to keep track of them (dont remove)
-# Merp
     config:
       counters:
         badword_counter:
@@ -224,7 +217,6 @@ plugins:
 
   "automod": # --------------------------------------------------------------------------------------------------------------------------
 # start of the automod plugin
-# v-0.0.0 # Added a new combination of rules targeting spam in this version
     config:
       rules:
 
@@ -730,8 +722,6 @@ plugins:
 
   "logs": # ----------------------------------------------------------------------------------------------------------------------------------------------------
 # start of logs
-# v-1.0.0 Adding versions to keep track of them (dont remove)
-# written by Merp
     config:
       channels:
         "830795192340447232": #member-logs
@@ -834,8 +824,8 @@ plugins:
             - MEMBER_ROLE_ADD
             - MEMBER_ROLE_REMOVE
             - MEMBER_ROLE_CHANGES
-#        "817684727888085002": # case-log
-#          include:
+        "817684727888085002": # case-log
+          include:
         "849732232582266940": # raid and bot alerts
           include:
             - SET_ANTIRAID_USER
