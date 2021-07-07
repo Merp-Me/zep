@@ -2,6 +2,10 @@ prefix: "!!"
 success_emoji: <:yes:841798945700184179>
 error_emoji: <:no:841798946144649277>
 
+
+# version 1.0.0
+
+
 # role id: level
 levels:
   "840631443523633202": 100 # Village Chief
@@ -23,8 +27,6 @@ plugins:
 
   "automod": # --------------------------------------------------------------------------------------------------------------------------
 # start of the automod plugin
-# v-1.1.0 # Added a new combination of rules targeting spam in this version
-# written by Merp
 #----------------------------------------------------
     overrides:
     - level: "<50" # Enabled rules for members here          
@@ -268,8 +270,6 @@ plugins:
 
   "counters": # --------------------------------------------------------------------------------------------------------------------------
 # start of the counters plugin
-# v-1.0.0 Adding versions to keep track of them (dont remove)
-# written by Merp
     config:
       can_view: true
       can_edit: false
@@ -309,8 +309,6 @@ plugins:
 
   "mutes": # --------------------------------------------------------------------------------------------------------------------------
 # start of the mutes plugin
-# v-1.0.1 Cleaned up some messages
-# written by Merp
     config:
       mute_role: "841376266815799326" # caveman
       move_to_voice_channel: null
@@ -339,8 +337,6 @@ plugins:
 
   "mod_actions": # --------------------------------------------------------------------------------------------------------------------------
 # start of the mod actions plugin
-# v-1.0.2 Changes warn, kick, ban and softban message
-# written by Merp
     replaceDefaultOverrides: true
     config:
       dm_on_warn: true
@@ -458,8 +454,6 @@ plugins:
   
   "logs": # ----------------------------------------------------------------------------------------------------------------------------------------------------
 # start of logs
-# v-1.0.0 Adding versions to keep track of them (dont remove)
-# written by Merp
     config:
       channels:
         "841695559315357736": #member-logs
