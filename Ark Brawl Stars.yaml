@@ -826,11 +826,11 @@ plugins:
             - MEMBER_ROLE_CHANGES
         "817684727888085002": # case-log
           include:
+            - CASE_UPDATE
         "849732232582266940": # raid and bot alerts
           include:
             - SET_ANTIRAID_USER
             - SET_ANTIRAID_AUTO
-            - CASE_UPDATE
             - BOT_ALERT
             - MEMBER_JOIN_WITH_PRIOR_RECORDS
 
