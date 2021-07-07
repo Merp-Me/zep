@@ -1,0 +1,1174 @@
+prefix: "!!"
+success_emoji: <:yes:841798945700184179>
+error_emoji: <:no:841798946144649277>
+
+# role id: level
+levels:
+  "840631443523633202": 100 # Village Chief
+  "840634828684656640": 50 # Village Hunter
+  "838385154543583262": 1 # Villager
+
+plugins:
+  "slowmode": # --------------------------------------------------------------------------------------------------------------------------
+# start of the slowmode plugin (I dont believe versions will be necessary)
+    config:
+      use_native_slowmode: true
+      can_manage: false
+      is_affected: true
+    overrides:
+      - level: ">=50"
+        config:
+          can_manage: true
+          is_affected: false
+
+  "automod": # --------------------------------------------------------------------------------------------------------------------------
+# start of the automod plugin
+# v-1.1.0 # Added a new combination of rules targeting spam in this version
+# written by Merp
+#----------------------------------------------------
+    overrides:
+    - level: "<50" # Enabled rules for members here          
+      config:
+        rules:
+          swear_filter:
+            enabled: true
+          spam_filter:
+            enabled: true
+          auto_delete_commands:
+            enabled: false
+
+    - level: ">=50" # Override rules here for mods
+      config:
+        rules:
+          swear_filter:
+            enabled: false
+          spam_filter:
+            enabled: false
+          auto_delete_commands:
+            enabled: true
+    
+    - level: ">=100" # Override rules here for admins
+      config:
+        rules:
+          swear_filter:
+            enabled: false
+          spam_filter:
+            enabled: false
+          auto_delete_commands:
+            enabled: true
+
+    - channel: ["840275637763833918", "841989674079879178"] #zeppelin and progress
+      config:
+        rules:
+          swear_filter:
+            enabled: false
+
+#----------------------------------------------------
+# rule configs
+    config:
+      rules:
+# Rules begin here
+
+        auto_delete_commands:
+          triggers:
+          - match_regex:
+              patterns:
+              # change prefix to what your bot's prefix is
+              # moderation commands
+              - '^\!!antiraid\b'
+              - '^\!!antiraid(\sclear|\sreset|\snone|\soff)?'
+              - '^\!!addcase\b'
+              - '^\!!ban\b'
+              - '^\!!forceban\b'
+              - '^\!!forcemute\b'
+              - '^\!!forceunmute\b'
+              - '^\!!hide(case|_case)?\b'
+              - '^\!!kick\b'
+              - '^\!!massban\b'
+              - '^\!!massmute\b'
+              - '^\!!mute\b'
+              - '^\!!mutes\b'
+              - '^\!!clear_banned_mutes\b'
+              - '^\!!note\b'
+              - '^\!!softban\b'
+              - '^\!!unban\b'
+              - '^\!!unhide(case|_case)?\b'
+              - '^\!!unmute\b'
+              - '^\!!update\b'
+              - '^\!!warn\b'
+              - '^\!!clear\b'
+              - '^\!!clean\b'
+          actions:
+            clean: true
+            log: false
+
+        spam_filter:
+          affects_bots: false
+          triggers:
+          - message_spam:
+              amount: 4
+              within: 5s
+          - mention_spam:
+              amount: 4
+              within: 3s
+          - emoji_spam:
+              amount: 5
+              within: 5s
+          actions:
+            clean: true
+            reply:
+              text:
+                content: "<@{user.id}>"
+                embed:
+                  title: "Detected spam"
+                  description: "I considered your last few messages to be spam and therefore, I have assigned you a spam point and have issued a warning.\n\n**What is a spam point you say?**\nEvery time you swear, you get given a point. What these points determine can be found below:\n> **1 point:** You get issued a warning\n> **2 points:** You get issued a warning and staff are notified\n> **3 points:** You get muted for 1 hour\n> **4 points:** You get muted for 12 hours!\n\n<:rdot:821322186726965291> You can check how many points you have by running `!!counters view spam_status`\n\n *Points reset every 12 hours*"
+                  color: 0xFFA027 #orange
+                  footer:
+                    icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/843189644131827742/821677752045404171.png"
+                    text: "This message will self-destruct in 1 minute!"
+              auto_delete: 1m 
+            add_to_counter:
+              counter: "spam_status"
+              amount: 1
+
+        spamfilter_action1: # mild_action
+          triggers:
+            - counter_trigger:
+                counter: "spam_status"
+                trigger: "mild_action"
+          actions:
+            warn:
+              reason: "I detected spam coming from this user. Since they accumalated only a single point, I responded mildly."
+
+        spamfilter_action2: # hard_action
+          triggers:
+            - counter_trigger:
+                counter: "spam_status"
+                trigger: "hard_action"
+          actions:
+            warn:
+              reason: "I detected spam coming from this user. Since they accumalated two points, I responded a little harshly than earlier."
+            alert:
+              channel: "842060873183133697" # raid-and-bot-alerts
+              text: "> **Caught <@{user.id}> spam twice already in the last two hours. I have issued two warnings so far. I thought it would be wise to let you know.**"
+
+        spamfilter_action3: # severe_action
+          triggers:
+            - counter_trigger:
+                counter: "spam_status"
+                trigger: "severe_action"
+          actions:
+            mute:
+              duration: 1h
+              reason: "I detected spam coming from this user. Since they accumalated three points, therefore, I was a little strict on them"
+
+        spamfilter_action4: # grim_action
+          triggers:
+            - counter_trigger:
+                counter: "spam_status"
+                trigger: "grim_action"
+          actions:
+            mute:
+              duration: 12h
+              reason: "I detected spam coming from this user. Since they accumalated four points (or more), I was strict when it came down to taking action on them."
+
+        swear_filter: 
+          affects_bots: false
+          triggers:
+          - match_words:
+              only_full_words: true
+              case_sensitive: false
+              match_messages: true
+              words: 
+               - "fuck"
+               - "shit"
+               - "bitch"
+               - "nigger"
+               - "nigg"
+               - "faggot"
+               - "stfu"
+               - "retard"
+               - "retarded"
+               - "nig"
+               - "shit"
+               - "fking"
+               - "fcking"
+               - "fck"
+               - "fk"
+               - "wanker"
+               - "nigga"
+               - "sheit"
+               - "shiet"
+               - "slag"
+               - "cunt"
+               - "mf"
+               - "hoe"
+               - "whore"
+               - "dick"
+          actions:
+            clean: true
+            reply:
+              text:
+                content: "<@{user.id}>"
+                embed: 
+                  title: "Detected a curse word"
+                  description: "I detected a curse word that was sent by you and therefore, I assigned you a curse point and muted you.\n\n**What is a curse point you say?**\nEvery time you swear, you get given a point. What these points determine can be found below:\n> **1 point:** You get muted for 10 minutes\n> **2 points:** You get muted for 30 minutes\n> **3 points:** You get muted for 1 hour\n> **4 points:** You get muted for 12 hours!\n\n<:rdot:821322186726965291> You can check how many points you have by running `!!counters view curse_status`\n\n *Points reset every 12 hours*"
+                  color: 0xFFA027 #orange
+                  footer:
+                    icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/843189644131827742/821677752045404171.png"
+                    text: "This message will self-destruct in 1 minute!"
+              auto_delete: 1m
+            add_to_counter:
+              counter: "curse_status"
+              amount: 1 # This infraction adds 1 automod infraction points
+
+        swearfilter_action1: # mild_action
+          triggers:
+            - counter_trigger:
+                counter: "curse_status"
+                trigger: "mild_action"
+          actions:
+            log: false
+            mute:
+              duration: 10m
+              reason: "User used a curse word in their message. Since they accumalated only a single point, I responded mildly."
+
+        swearfilter_action2: # hard_action
+          triggers:
+            - counter_trigger:
+                counter: "curse_status"
+                trigger: "hard_action"
+          actions:
+            log: false
+            mute:
+              duration: 30m
+              reason: "User used a curse word in their message. Since they accumalated two points, I responded a little harshly than earlier."
+
+        swearfilter_action3: # severe_action
+          triggers:
+            - counter_trigger:
+                counter: "curse_status"
+                trigger: "severe_action"
+          actions:
+            log: false
+            mute:
+              duration: 1h
+              reason: "User used a curse word in their message. Since they accumalated three points, therefore, I was a little strict on them"
+
+        swearfilter_action4: # grim_action
+          triggers:
+            - counter_trigger:
+                counter: "curse_status"
+                trigger: "grim_action"
+          actions:
+            log: false
+            mute:
+              duration: 12h
+              reason: "User used a curse word in their message. Since they accumalated four points (or more), I was strict when it came down to taking action on them."
+
+  "counters": # --------------------------------------------------------------------------------------------------------------------------
+# start of the counters plugin
+# v-1.0.0 Adding versions to keep track of them (dont remove)
+# written by Merp
+    config:
+      can_view: true
+      can_edit: false
+      counters:
+      
+        spam_status:
+          per_user: true
+          triggers:
+            mild_action:
+              condition: ">=1"
+            hard_action:
+              condition: ">=2"
+            severe_action:
+              condition: ">=3"
+            grim_action:
+              condition: ">=4"
+            # remove 4 points every 12h
+          decay:
+            amount: 4
+            every: 12h
+
+        curse_status: # credit goes to dex :)
+          per_user: true
+          triggers:
+            mild_action:
+              condition: ">=1"
+            hard_action:
+              condition: ">=2"
+            severe_action:
+              condition: ">=3"
+            grim_action:
+              condition: ">=4"
+          # Remove 4 points every 12h
+          decay:
+            amount: 4
+            every: 12h
+
+  "mutes": # --------------------------------------------------------------------------------------------------------------------------
+# start of the mutes plugin
+# v-1.0.1 Cleaned up some messages
+# written by Merp
+    config:
+      mute_role: "841376266815799326" # caveman
+      move_to_voice_channel: null
+      kick_from_voice_channel: true
+      dm_on_mute: true
+      dm_on_update: true
+      message_on_mute: true
+      message_on_update: true
+      message_channel: "842152192088735754" # action log
+      mute_message: "<:delete:841796219461828615> You have been muted indefinitely in **{guildName}**.\n<:link:841364697885835295> __Reason given:__\n```{reason}```\n\n<:ping:821677752045404171> To appeal, contact the mod team through <@726144682018603080> - `726144682018603080`"
+      timed_mute_message: "<:delete:841796219461828615> You have been muted in **{guildName}** for {time}.\n<:link:841364697885835295> __Reason given:__\n```{reason}```"
+      update_mute_message: "<:ping:821677752045404171> Your mute in **{guildName}** has been updated to: {time}."
+      remove_roles_on_mute:
+        - "838385154543583262" # Villager
+      restore_roles_on_mute:
+        - "838385154543583262" # Villager
+      can_view_list: false
+      can_cleanup: false
+    overrides:
+      - level: '>=50'
+        config:
+          can_view_list: true
+      - level: '>=100'
+        config:
+          can_cleanup: true
+
+  "mod_actions": # --------------------------------------------------------------------------------------------------------------------------
+# start of the mod actions plugin
+# v-1.0.2 Changes warn, kick, ban and softban message
+# written by Merp
+    replaceDefaultOverrides: true
+    config:
+      dm_on_warn: true
+      dm_on_kick: true
+      dm_on_ban: true
+      message_on_warn: true
+      message_on_kick: true
+      message_on_ban: true
+      message_channel: "842152192088735754" # action channel
+      warn_message: "<:delete:841796219461828615> You have been issued a warning in **{guildName}**.\n<:link:841364697885835295> __Reason given:__ ```{reason}```"
+      kick_message: "<:delete:841796219461828615> You were kicked from **{guildName}**.\n<:link:841364697885835295> __Reason given:__\n```{reason}```"
+      ban_message: "<:delete:841796219461828615> You were banned from **{guildName}**.\n<:link:841364697885835295> __Reason given:__\n```{reason}```\n\n<:ping:821677752045404171> To appeal, contact the mod team through <@726144682018603080> - `726144682018603080`"
+      tempban_message: "<:delete:841796219461828615> You have been banned from **{guildName} for {banTime}.\n<:link:841364697885835295> __Reason given:__\n```{reason}```"
+      alert_on_rejoin: true
+      alert_channel: "842060873183133697" # raid and bot alerts
+      warn_notify_enabled: true
+      warn_notify_threshold: 5
+      warn_notify_message: "The user already has **{priorWarnings}** warnings!\nPlease check their prior cases and assess whether or not to warn anyways.\nProceed with the warning?"
+      ban_delete_message_days: 1
+      can_note: false
+      can_warn: false
+      can_mute: false
+      can_kick: false
+      can_ban: false
+      can_unban: false
+      can_view: false
+      can_addcase: false
+      can_massunban: false
+      can_massban: false
+      can_massmute: false
+      can_hidecase: false
+      can_deletecase: false
+      can_act_as_other: false
+      create_cases_for_manual_actions: false
+    overrides:
+      - level: ">=50"
+        config:
+          can_note: true
+          can_warn: true
+          can_mute: true
+          can_view: true
+          can_addcase: true
+      - level: ">=100"
+        config:
+          can_kick: true
+          can_unban: true
+          can_ban: true
+          can_massunban: true
+          can_massban: true
+          can_massmute: true
+          can_hidecase: true
+          can_act_as_other: true
+
+  "utility": # -----------------------------------------------------------------------------------------------------------------------------------------
+    replaceDefaultOverrides: true
+    config: {}
+    overrides:
+      - level: ">=50"
+        config:
+          can_ping: true
+          can_jumbo: true
+          can_level: true
+          can_search: true
+          can_clean: true
+          can_info: true
+          can_server: true
+          can_inviteinfo: true
+          can_channelinfo: true
+          can_messageinfo: true
+          can_userinfo: true
+          can_snowflake: true
+          can_nickname: true
+          can_source: true
+          can_vcmove: true
+          can_vckick: true
+          can_help: true
+          can_about: true
+          can_context: true
+          can_avatar: true
+          info_on_single_result: true
+      - level: ">=100"
+        config:
+          can_reload_guild: true
+          can_roles: true
+
+  "cases": #-----------------------------------------------------------------------------------------------------------------------------------------------------
+# start of cases 
+# v-1.1.2 Changed colours
+# written by Merp
+    config:
+      log_automatic_actions: true
+      case_log_channel: "841788887105929226" # case-log
+      show_relative_times: true
+      relative_time_cutoff: 5d
+      case_colors:
+        warn: yellow
+        ban: red
+        unban: 2EFF27 # green
+        note: FEE9E9 # whitish
+        kick: F34B80 # pinkish
+        mute: yellow
+        unmute: 2EFF27 # green
+        deleted: orange
+        softban: F73C4F # Lighter shade of red
+      case_icons:
+        warn: "<:do_not_disturb:841799310797832244>"
+        ban: "<:do_not_disturb:841799310797832244>"
+        unban: "<:online:841799312878731284>"
+        note: "<:comment:841797193505046528>"
+        kick: "<:do_not_disturb:841799310797832244>"
+        mute: "<:do_not_disturb:841799310797832244>"
+        unmute: "<:online:841799312878731284>"
+        deleted: "<:delete:841796219461828615>"
+        softban: "<:do_not_disturb:841799310797832244>"
+  
+  "logs": # ----------------------------------------------------------------------------------------------------------------------------------------------------
+# start of logs
+# v-1.0.0 Adding versions to keep track of them (dont remove)
+# written by Merp
+    config:
+      channels:
+        "841695559315357736": #member-logs
+          include:
+            - MEMBER_JOIN
+            - MEMBER_LEAVE
+            - MEMBER_KICK
+            - MEMBER_JOIN_WITH_PRIOR_RECORDS
+            - MEMBER_BAN
+            - MEMBER_FORCEBAN
+            - MASSBAN
+            - MEMBER_SOFTBAN
+            - MEMBER_MUTE_REJOIN
+        "841984145474977824": # auto-log
+          include:
+            - AUTOMOD_ACTION
+        "841989625090277406": # msg-log
+          include:
+            - DM_FAILED
+            - MESSAGE_DELETE
+            - MESSAGE_DELETE_BARE
+            - MESSAGE_EDIT
+            - MESSAGE_SPAM_DETECTED
+            - CLEAN
+            - MESSAGE_DELETE_BULK
+            - POSTED_SCHEDULED_MESSAGE
+            - SCHEDULED_MESSAGE
+            - SCHEDULED_REPEATED_MESSAGE
+            - REPEATED_MESSAGE
+            - MESSAGE_DELETE_AUTO
+          excluded_categories:
+            - "726152892532129862" # RED
+            - "838384401179738143" # Storage
+          excluded_channels:
+            - "841989674079879178" # Progress
+            - "836600534785458216" # Hydra
+          excluded_message_regexes:
+            # moderation commands
+            - '^\!!antiraid\b'
+            - '^\!!antiraid(\sclear|\sreset|\snone|\soff)?'
+            - '^\!!addcase\b'
+            - '^\!!ban\b'
+            - '^\!!case\b'
+            - '^\!!(cases|modlogs)\b'
+            - '^\!!delete(case|_case)\b'
+            - '^\!!forceban\b'
+            - '^\!!forcemute\b'
+            - '^\!!forceunmute\b'
+            - '^\!!hide(case|_case)?\b'
+            - '^\!!kick\b'
+            - '^\!!massban\b'
+            - '^\!!massmute\b'
+            - '^\!!mute\b'
+            - '^\!!mutes\b'
+            - '^\!!clear_banned_mutes\b'
+            - '^\!!note\b'
+            - '^\!!softban\b'
+            - '^\!!unban\b'
+            - '^\!!unhide(case|_case)?\b'
+            - '^\!!unmute\b'
+            - '^\!!update\b'
+            - '^\!!warn\b'
+            # utility commands
+            - '^\!!about\b'
+            - '^\!!avatar\b'
+            - '^\!!(bansearch|bs)\b'
+            - '^\!!(channel|channelinfo)\b'
+            - '^\!!(clean|clear)\b'
+            - '^\!!context\b'
+            - '^\!!help\b'
+            - '^\!!info\b'
+            - '^\!!(invite|inviteinfo)\b'
+            - '^\!!jumbo\b'
+            - '^\!!level\b'
+            - '^\!!(message|messageinfo)\b'
+            - '^\!!(nickname|nick)\b'
+            - '^\!!ping\b'
+            - '^\!!reload_guild\b'
+            - '^\!!roles\b'
+            - '^\!!search\b'
+            - '^\!!(server|serverinfo)\b'
+            - '^\!!(snowflake|snowflakeinfo)\b'
+            - '^\!!source\b'
+            - '^\!!(user|userinfo|whois)\b'
+            - '^\!!vcmove\b'
+            - '^\!!vcmoveall\b'
+          exclude_bots: true
+        "842039255396384810": # name logs
+          include:
+            - MEMBER_NICK_CHANGE
+            - MEMBER_USERNAME_CHANGE
+        "842043101731749898": # vc logs
+          include:
+            - VOICE_CHANNEL_JOIN
+            - VOICE_CHANNEL_MOVE
+            - VOICE_CHANNEL_LEAVE
+            - VOICE_CHANNEL_FORCE_MOVE
+        "842054422418161664": #role logs
+          include:
+            - MEMBER_ROLE_ADD
+            - MEMBER_ROLE_REMOVE
+            - MEMBER_ROLE_CHANGES
+        "841788887105929226": # case-log
+          include:
+            - CASE_DELETE
+            - CASE_UPDATE
+        "842060873183133697": # raid and bot alerts
+          include:
+            - SET_ANTIRAID_USER
+            - SET_ANTIRAID_AUTO
+            - BOT_ALERT
+
+      include_embed_timestamp: true # Will show time on footer by default
+      
+# server entry/exit logs
+
+      format:
+        timestamp: "DD/MM/YYYY HH:mm:ss"
+        MEMBER_JOIN: #member-logs
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+              url: Null
+            title: "MEMBER JOINED"
+            fields:
+            -  name: "<:profile:841364699958607894> **User:**"
+               value: '{new} <@{member.id}>'
+               inline: true
+            -  name: "<:shield:841742745415843861> **Created:**"
+               value: "{account_age} ago"
+               inline: true
+            image:
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer:
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0x2EFF27 #green
+            thumbnail:
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808292686691172392/inbox_tray.png"
+
+        MEMBER_LEAVE:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+              url: Null
+            title: "MEMBER LEFT"
+            description: "<:profile:841364699958607894> **User:** <@{member.id}> left the server"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer:
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFFA027 #orange
+            thumbnail:
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808292702202363954/outbox_tray.png"
+
+        MEMBER_KICK:
+          embed:
+            author:
+              name: "{user.username}#{user.discriminator}"
+            title: "MEMBER KICKED"
+            fields:
+            -  name : "<:profile:841364699958607894> **User:**"
+               value : "<@{user.id}>"
+               inline : true
+            -  name : "<:mod:841803565295337522> **By:**"
+               value : "<@{mod.id}>"
+               inline : true
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer:
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFF2727 #red
+
+        MEMBER_JOIN_WITH_PRIOR_RECORDS:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+            title: "JOIN WITH PRIOR RECORDS"
+            fields:
+            -  name : "<:profile:841364699958607894> **User:**"
+               value : "{new} <@{member.id}>"
+               inline : true
+            -  name : "<:shield:841742745415843861> **Created:**"
+               value : "{account_age} ago"
+               inline : true
+            description: "<:archive:841807460661985300> **Recent cases:**\n{recentCaseSummary}"
+            image:
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer:
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFF2727 #red
+            thumbnail:
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808292686691172392/inbox_tray.png"
+
+        MEMBER_BAN:
+          embed:
+            author:
+              name: "{user.username}#{user.discriminator}"
+            title: "MEMBER BANNED"
+            fields:
+            -  name : "<:profile:841364699958607894> **User:**"
+               value : "<@{user.id}>"
+               inline : true
+            -  name : "<:mod:841803565295337522> **By:**"
+               value : "<@{mod.id}>"
+               inline : true
+            image:
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer:
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFF2727 #red
+
+        MEMBER_FORCEBAN:
+          embed:
+            author:
+              name: "{user.username}#{user.discriminator}"
+            title: "MEMBER FORCE BANNED"
+            fields:
+            -  name : "<:profile:841364699958607894> **User:**"
+               value : "<@{user.id}>"
+               inline : true
+            -  name : "<:mod:841803565295337522> **By:**"
+               value : "<@{mod.id}>"
+               inline : true
+            image:
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer:
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFF2727 #red
+ 
+        MASSBAN:
+          embed:
+            title: "MASSBAN"
+            description: "<:delete:841796219461828615> {count} users were massbanned\n<:mod:841803565295337522> **By:** <@{mod.id}>"
+            image:
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0x000000 #black
+
+        MEMBER_SOFTBAN: # kicks a user and deletes all previous messages/posts
+          embed:
+            author:
+              name: "{user.username}#{user.discriminator}"
+            title: "MEMBER SOFT BANNED"
+            fields:
+            -  name : "<:profile:841364699958607894> **User:**"
+               value : "<@{user.id}>"
+               inline : true
+            -  name : "<:mod:841803565295337522> **By:**"
+               value : "<@{mod.id}>"
+               inline : true
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer:
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFFA027 #orange
+
+        MEMBER_MUTE_REJOIN:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+            title: "MUTED MEMBER REJOIN"
+            description: "Reapplied active mute on rejoin\n<:profile:841364699958607894> **User:** <@{member.id}>"
+            image:
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer:
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFF2727 #red
+            thumbnail:
+              url: "https://cdn.discordapp.com/attachments/718870031345385544/841982191071395860/management.png"
+
+# auto logs (auto mod logs)
+
+        AUTOMOD_ACTION:
+          embed:
+            title: "{user.username}#{user.discriminator}"
+            fields:
+            -  name : "<:list:841984872447868949> **Type:**"
+               value : "{rule}"
+               inline : true
+            -  name : "<:profile:841364699958607894> **Mention:**"
+               value : "<@{user.id}>"
+               inline : true
+            -  name : "<:management:841981762271576085> **Action:**"
+               value : "{actionsTaken}"
+               inline : true
+            -  name: "<:link:841364697885835295> **Match:**"
+               value: "{matchSummary}"
+               inline : false
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer:
+              text: "{user.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFF2727 #red
+            thumbnail:
+              url: "https://cdn.discordapp.com/attachments/718870031345385544/841982191071395860/management.png"
+
+# message logs
+
+        DM_FAILED:
+          embed:
+            author:
+              name: "{user.username}#{user.discriminator}"
+            title: "DM FAILED"
+            description: "<:link:841364697885835295> Failed to send DM ({source})\n<:profile:841364699958607894> **<:profile:841364699958607894> To:** <@{user.id}>"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer:
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFFA027 #orange
+
+        MESSAGE_DELETE:
+          embed:
+            title: "{user.username}#{user.discriminator}"
+            description: "<:link:841364697885835295> **Message sent by <@{user.id}>  deleted in <#{channel.id}>**\n{messageSummary(message)}"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0xFF2727 #red
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            thumbnail:
+              url: "https://cdn.discordapp.com/attachments/718870031345385544/841995157208956948/wastebin.png"
+
+        MESSAGE_DELETE_BARE:
+          embed:
+            title: "{user.username}#{user.discriminator}"
+            description: "<:link:841364697885835295> **Message deleted in <#{channel.id}>**\n(no more info available)"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0xFF2727 #red
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            thumbnail:
+              url: "https://cdn.discordapp.com/attachments/718870031345385544/841995157208956948/wastebin.png"
+
+        MESSAGE_EDIT: 
+          embed:
+            author:
+              name: "{user.username}#{user.discriminator}"
+              # Be sure to replace server id with your server.in the link below!
+            description: "<:link:841364697885835295>  **[message](https://canary.discord.com/channels/694868295697956875/{channel.id}/{after.id}) sent by <@{user.id}> edited in <#{channel.id}>**\n\n**Old Message:**\n{messageSummary(before)}\n\n**New Message:**\n{messageSummary(after)}"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0xFFA027 #orange
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            thumbnail:
+              url: "https://cdn.discordapp.com/attachments/718870031345385544/842012877347094568/edit.png"
+
+        MESSAGE_SPAM_DETECTED:
+          embed:
+            author:
+              name: "{user.username}#{user.discriminator}"
+            title: "MESSAGE SPAM DETECTED"
+            description: "Message spam in <#{message.id}> by <@{member.id}>\n{description}\n(more than {limit} in {interval}s)\n<:link:841364697885835295> {archiveUrl}"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFFA027 #orange
+
+        CLEAN:
+          embed:
+            title: "MESSAGES CLEANED"
+            fields:
+            -  name : "<:profile:841364699958607894> **User:**"
+               value : "<@{mod.id}>"
+               inline : true
+            -  name : "<:wastebin:841993410474672128> **Cleaned:**"
+               value : "{count} message(s)"
+               inline : true
+            -  name : "<:link:841364697885835295> **In:**"
+               value : '<#{channel.id}>'
+               inline : true
+            -  name: "<:archive:841807460661985300> **Messages:**"
+               value: "[Archive]({archiveUrl})"
+               inline : true
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0xFF2727 #red
+
+        MESSAGE_DELETE_BULK:
+          embed:
+            title: "{count} MESSAGES DELETED"
+            fields:
+            -  name : "<:profile:841364699958607894> **By:**"
+               value : "{authorIds}"
+               inline : true
+            -  name : "<:link:841364697885835295> **In:**"
+               value : "<#{channel.id}>"
+               inline : true
+            -  name : "<:archive:841807460661985300> **Messages:**"
+               value : "[Archive]({archiveUrl})"
+               inline : true
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0xFF2727 #red
+
+        POSTED_SCHEDULED_MESSAGE:
+          embed:
+            title: "POSTED SCHEDULED MESSAGE"
+            description: "<:id:841364696732794950> **Posted scheduled message:** (`{messageId}`)\n<:link:841364697885835295> **To:** {channelMention(channel)}\n<:profile:841364699958607894> **Scheduled by:** {userMention(author)}"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0x000000 #black
+
+        SCHEDULED_MESSAGE:
+          embed:
+            title: "SCHEDULED MESSAGE"
+            description: "<:profile:841364699958607894> {userMention(author)} scheduled a message\n<:link:841364697885835295> **To be posted to:** {channelMention(channel)}\n<:timer2:734098540443336705> **On: {datetime}"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0x000000 #black
+
+        SCHEDULED_REPEATED_MESSAGE:
+          embed:
+            title: 'SCHEDULED REPEATED MESSAGE'
+            description: "<:profile:841364699958607894> {userMention(author)} scheduled a message\n<:link:841364697885835295> **To be posted to:** {channelMention(channel)}\n<:timer2:734098540443336705> **On:** {datetime}\n<:repeat:842030680740986900>  **Repeated:** {repeatDetails}"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0x000000 #black
+
+        REPEATED_MESSAGE:
+          embed:
+            title: "REPEATED MESSAGE"
+            description: "<:profile:841364699958607894> {userMention(author)} scheduled a message\n<:link:841364697885835295> **To be posted to:** {channelMention(channel)}\n<:repeat:842030680740986900> **Repeated:** {repeatDetails}"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0x000000 #black
+  
+# auto delete logs
+
+        MESSAGE_DELETE_AUTO:
+          embed:
+            author: 
+              name: "{user.username}#{user.discriminator}"
+            title: "MESSAGE AUTO-DELETED"
+            fields:
+            -  name : "<:profile:841364699958607894> **From:**"
+               value : "<@{user.id}>"
+               inline : true
+            -  name : "<:link:841364697885835295> **In:**"
+               value : "<#{channel.id}>"
+               inline : true
+            -  name : "<:archive:841807460661985300> **Message:*"
+               value : "{messageSummary(message)}"
+               inline : false
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFF2727 #red
+
+# name logs
+
+        MEMBER_NICK_CHANGE:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+              url: "{user.member.avatarURL}"
+            description: "<:edit:842038359979065384> <@{member.id}> **nickname edited**"
+            fields:
+            -  name : "**Old Nickname**"
+               value : "`{oldNick}`"
+               inline : true
+            -  name : "<:member_join:837419100233531392> **New Nickname**"
+               value : "`{newNick}`"
+               inline : true
+            color: 0x2744FF #blue
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+
+        MEMBER_USERNAME_CHANGE:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+              url: "{user.member.avatarURL}"
+            description: "<:edit:842038359979065384> <@{member.id}> **username edited**"
+            fields:
+            -  name : "**Old Username**"
+               value : "`{oldName}`"
+               inline : true
+            -  name : "<:member_join:837419100233531392> **New Username**"
+               value : "`{newName}`"
+               inline : true
+            color: 0x2744FF #blue
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+
+# Voice logs
+
+        VOICE_CHANNEL_JOIN:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+              url: "{user.member.avatarURL}"
+            title: "Voice Join"
+            description: "<:mic:842048600808751139> <@{member.id}>"
+            fields:
+            -  name: "Joined:"
+               value: "{channel.name}"
+            image: 
+              url: 'https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png'
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0x2EFF27 #green
+
+        VOICE_CHANNEL_MOVE:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+              url: "{user.member.avatarURL}"
+            title: "Voice Move"
+            description: "<:mic:842048600808751139> <@{member.id}>"
+            fields:
+            -  name : "**From:**"
+               value : "{oldChannel.name}"
+               inline : true
+            -  name : "**To:**"
+               value : "{newChannel.name}"
+               inline : true
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0x2744FF #blue
+
+        VOICE_CHANNEL_LEAVE:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+              url: "{user.member.avatarURL}"
+            title: "Voice Leave"
+            description: "<:mic:842048600808751139> <@{member.id}>"
+            fields:
+            -  name: "Left:"
+               value: "{channel.name}"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFF2727 #red
+
+        VOICE_CHANNEL_FORCE_MOVE:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+              url: "{user.member.avatarURL}"
+            title: "Voice Forced Move"
+            description: "<:mic:842048600808751139> <@{member.id}>"
+            fields:
+            -  name : "**From:**"
+               value : "{oldChannel.name}"
+               inline : true
+            -  name : "**To:**"
+               value : "{newChannel.name}"
+               inline : true
+            -  name : "**By:**"
+               value : "<@{mod.id}>"
+               inline : true
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFFA027 #orange
+
+# Role logs
+
+        MEMBER_ROLE_ADD:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+            title: "ROLE(S) ADDED"
+            fields:
+            -  name : "**User:**"
+               value : "<@{member.id}>"
+               inline : true
+            -  name : "**Role(s) Added:**"
+               value : "• **{roles}**"
+               inline : true
+            image: 
+              url: 'https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png'
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0x2EFF27 #green
+
+        MEMBER_ROLE_REMOVE:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+            title: "ROLE(S) REMOVED"
+            fields:
+            -  name : "**User:**"
+               value : "<@{member.id}>"
+               inline : true
+            -  name : "**Role(s) Removed:**"
+               value : "**{roles}**"
+               inline : true
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0xFF2727 #red
+
+        MEMBER_ROLE_CHANGES:
+          embed:
+            author:
+              name: "{member.user.username}#{member.user.discriminator}"
+            title: "ROLE(S) CHANGED"
+            fields:
+            -  name : "**User:**"
+               value : "<@{member.id}>"
+               inline : true
+            -  name : "**Role(s) Added:**"
+               value : "{addedRoles}"
+               inline : true
+            -  name : "**Role(s) Removed:**"
+               value : "{removedRoles}"
+               inline : true
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            footer: 
+              text: "{member.id}"
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/841740046046724156/841364696732794950.png"
+            color: 0x2744FF #blue
+
+# case-logs
+
+        CASE_DELETE:
+          embed:
+            title: "CASE DELETED"
+            fields:
+            -  name : "**Case:**"
+               value : "#{caseNumber}"
+               inline : true
+            -  name : "**By:**"
+               value : "<@{mod.id}>"
+               inline : true
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0xFF2727 #red
+
+        CASE_UPDATE:
+          embed:
+            title: "CASE UPDATED"
+            fields:
+            -  name : "**By:**"
+               value : "<@{mod.id}>"
+               inline : true
+            -  name : "**Case:**"
+               value : "#{caseNumber}({caseType})"
+               inline : true
+            -  name : "**Note:**"
+               value : "```{note}```"
+               inline : false
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0xFFA027 #orange
+
+# bot alerts and anti raid logs
+
+        SET_ANTIRAID_USER:
+          embed:
+            title: "ANTI-RAID SET"
+            description: "<:access:837419378382602280> <@{user.ID}> set anti-raid to **{level}**"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0x2EFF27 #green
+
+        SET_ANTIRAID_AUTO:
+          embed:
+            title: "AUTO ANTI-RAID"
+            description: "<:access:837419378382602280> Anti-raid automatically set to **{level}**"
+            image: 
+              url: "https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png"
+            color: 0x2EFF27 #green
+
+        BOT_ALERT:
+          embed:
+            title: "BOT ALERT"
+            description: "<@344182007045292043>\n{tmplEval(body)}"
+            image: 
+              url: 'https://cdn.discordapp.com/attachments/670339348956446772/808055881966813234/embed_width.png'
+            color: 0xFFFFFF #black
+
+    replaceDefaultOverrides: true
+    overrides:
+     # greeter+
+     - level: '>=50'
+       config:
+        ping_user: false
