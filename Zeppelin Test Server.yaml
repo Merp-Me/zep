@@ -3,7 +3,7 @@ success_emoji: <:yes:841798945700184179>
 error_emoji: <:no:841798946144649277>
 
 
-# Version 1.0.0 of this config
+# Version 1.0.1 of this config
 
 
 levels:
@@ -791,7 +791,18 @@ plugins:
 
       format:
         timestamp: ""
-        MEMBER_JOIN: ""
+        MEMBER_JOIN:
+          content: "<:sjoin:855899837613473822> **MEMBER JOINED**\n<:obj:851095180430016552><:obj:851095180430016552><:obj:851095180430016552><:obj:851095180430016552><:obj:851095180430016552><:obj:851095180430016552><:obj:851095180430016552>\n<:obj:851098004349386752><:rank:854444503627595816>**{member.user.username}#{member.user.discriminator}**\n<:mention:853644742607896596><:rank:854444503627595816><@{member.id}>\n<:id:853643350203826216><:rank:854444503627595816>`{member.id}`\n<:duration:855849873437098024><:rank:854444503627595816>Created {account_age} ago!"
+          embed:
+            image:
+              url: "https://cdn.discordapp.com/attachments/718870031345385544/862686662991544330/embed_width.png"
+            color: 0x2FDF84 # Green
+            thumbnail:
+              url: 'https://cdn.discordapp.com/{if(member.user.avatar, concat("avatars/", member.user.id, "/", member.user.avatar, ".",if(eq(slice(concat(member.user.avatar),0,2),"a_"),"gif","png")),concat("embed/avatars/", sub(member.user.discriminator,mul(5,if(eq(slice(concat(div(member.user.discriminator,5)),-2,-1),"."),slice(concat(div(member.user.discriminator,5)),0,-2),div(member.user.discriminator,5)))), ".png"))}'
+            footer:
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/862684295860584469/853643350203826216.png"
+              text: "{member.id}"
+          
 
         MEMBER_LEAVE:
           embed:
