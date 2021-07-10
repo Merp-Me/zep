@@ -3,7 +3,7 @@ success_emoji: <:yes:841798945700184179>
 error_emoji: <:no:841798946144649277>
 
 
-# Version 1.0.3 of this config
+# Version 1.0.4 of this config
 
 
 levels:
@@ -789,8 +789,8 @@ plugins:
 
 # server entry/exit logs
 
+      include_embed_timestamp: false
       format:
-        include_embed_timestamp: false
         MEMBER_JOIN:
           embed:
             title: "<:sjoin:855899837613473822> **MEMBER JOINED**"
