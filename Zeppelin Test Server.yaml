@@ -3,7 +3,7 @@ success_emoji: <:yes:841798945700184179>
 error_emoji: <:no:841798946144649277>
 
 
-# Version 1.0.4 of this config
+# Version 1.0.5 of this config
 
 
 levels:
@@ -319,6 +319,7 @@ plugins:
                 - spen
                 - tom
                 - yde
+                - E9QBHFwbuU # Zep test server
           actions:
             mute:
               reason: "User posted an invite link"
@@ -791,6 +792,7 @@ plugins:
 
       include_embed_timestamp: false
       format:
+        timestamp: ""
         MEMBER_JOIN:
           embed:
             title: "<:sjoin:855899837613473822> **MEMBER JOINED**"
@@ -800,6 +802,9 @@ plugins:
             thumbnail:
               url: 'https://cdn.discordapp.com/{if(member.user.avatar, concat("avatars/", member.user.id, "/", member.user.avatar, ".",if(eq(slice(concat(member.user.avatar),0,2),"a_"),"gif","png")),concat("embed/avatars/", sub(member.user.discriminator,mul(5,if(eq(slice(concat(div(member.user.discriminator,5)),-2,-1),"."),slice(concat(div(member.user.discriminator,5)),0,-2),div(member.user.discriminator,5)))), ".png"))}'
             color: 0x43B581 # Green
+            footer:
+              icon_url: "https://cdn.discordapp.com/attachments/718870031345385544/843189644131827742/821677752045404171.png"
+              text: "Run '!userinfo {member.id}' to view this information whenever you want!"
           
 
         MEMBER_LEAVE:
